@@ -1,0 +1,1616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HIMC Guidance Counselor - Disciplinary Services</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #3d3567;
+            --dark-navy: #2d2550;
+            --gold: #d4a650;
+            --light-gold: #f5c563;
+            --white: #ffffff;
+            --light-gray: #f5f5f5;
+            --green: #28a745;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--light-gray);
+            color: var(--dark-navy);
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--dark-navy);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(212, 166, 80, 0.3);
+        }
+
+        .logo-box {
+            width: 60px;
+            height: 60px;
+            border: 3px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+        }
+
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 2px;
+        }
+
+        .logo-description {
+            flex: 1;
+        }
+
+        .logo-title {
+            color: var(--gold);
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .logo-subtitle {
+            color: var(--gold);
+            font-size: 12px;
+            font-weight: 400;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            color: var(--gold);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background: rgba(212, 166, 80, 0.1);
+        }
+
+        .nav-item.active {
+            background: rgba(212, 166, 80, 0.2);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            background: var(--white);
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: var(--navy);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .page-title-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .page-icon {
+            font-size: 32px;
+            color: var(--white);
+        }
+
+        .page-title {
+            color: var(--white);
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .page-subtitle {
+            color: var(--white);
+            font-size: 14px;
+            font-weight: 400;
+            margin-top: 2px;
+            opacity: 0.9;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification-icon {
+            font-size: 24px;
+            color: var(--gold);
+            cursor: pointer;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--dark-navy);
+        }
+
+        .user-info {
+            text-align: right;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        .user-info:hover {
+            background: rgba(212, 166, 80, 0.1);
+        }
+
+        .user-name {
+            color: var(--white);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .user-email {
+            color: var(--white);
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* User Dropdown Menu */
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 10px;
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            padding: 10px;
+            min-width: 220px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .user-dropdown.show {
+            display: block;
+        }
+
+        .dropdown-header {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .dropdown-username {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark-navy);
+            margin-bottom: 5px;
+        }
+
+        .dropdown-email {
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        .dropdown-menu-item {
+            padding: 12px 15px;
+            font-size: 14px;
+            color: var(--dark-navy);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dropdown-menu-item:hover {
+            background: var(--light-gray);
+        }
+
+        .dropdown-menu-item.logout {
+            color: #dc3545;
+            border-top: 1px solid #e0e0e0;
+            margin-top: 5px;
+        }
+
+        .dropdown-menu-item.logout:hover {
+            background: #fee;
+        }
+
+        /* Dashboard Content */
+        .dashboard-content {
+            padding: 40px;
+        }
+
+        /* Stats Cards */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--dark-navy);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .stat-card-title {
+            color: var(--gold);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .stat-card-value {
+            color: var(--gold);
+            font-size: 64px;
+            font-weight: 700;
+        }
+
+        /* Announcement Banner */
+        .announcement-banner {
+            background: var(--gold);
+            border-radius: 12px;
+            padding: 20px 30px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .announcement-icon {
+            font-size: 28px;
+            color: var(--dark-navy);
+        }
+
+        .announcement-content {
+            flex: 1;
+            font-size: 16px;
+            color: var(--dark-navy);
+        }
+
+        .announcement-label {
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        /* Incoming Referrals Section */
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-navy);
+            margin-bottom: 30px;
+        }
+
+        .referrals-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .referral-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .referral-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark-navy);
+        }
+
+        .referral-reason {
+            font-size: 16px;
+            color: var(--dark-navy);
+            margin-bottom: auto;
+        }
+
+        .btn-start {
+            background: var(--green);
+            color: var(--white);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 40px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            align-self: flex-end;
+        }
+
+        .btn-start:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        /* Page Header */
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .page-header-icon {
+            font-size: 32px;
+            color: var(--dark-navy);
+        }
+
+        .page-header-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--dark-navy);
+        }
+
+        /* Manage Offense Grid */
+        .manage-offense-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            max-width: 1400px;
+        }
+
+        .manage-offense-card {
+            background: var(--dark-navy);
+            border-radius: 16px;
+            padding: 80px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 180px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .manage-offense-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+            background: #2a2145;
+        }
+
+        .manage-offense-card-title {
+            color: var(--gold);
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        /* Back Button */
+        .back-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: transparent;
+            border: none;
+            color: var(--dark-navy);
+            font-family: 'Outfit', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            color: var(--navy);
+        }
+
+        .back-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--dark-navy);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* Disciplinary Measures Styles */
+        .disciplinary-content {
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+            background: var(--light-gray);
+            padding: 30px;
+            border-radius: 12px;
+        }
+
+        .offense-level-section {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .offense-level-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-navy);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--dark-navy);
+        }
+
+        .offense-content {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .offense-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .offense-list li {
+            padding: 12px 0 12px 25px;
+            color: var(--dark-navy);
+            font-size: 15px;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .offense-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--dark-navy);
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .penalties-section {
+            background: #f8f8f8;
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 25px;
+        }
+
+        .penalties-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark-navy);
+            margin-bottom: 15px;
+        }
+
+        .penalties-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .penalties-list li {
+            padding: 10px 0 10px 25px;
+            color: var(--dark-navy);
+            font-size: 14px;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .penalties-list li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--dark-navy);
+            font-weight: bold;
+        }
+
+        /* Scrollbar */
+        .disciplinary-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .disciplinary-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .disciplinary-content::-webkit-scrollbar-thumb {
+            background: var(--dark-navy);
+            border-radius: 10px;
+        }
+
+        .disciplinary-content::-webkit-scrollbar-thumb:hover {
+            background: var(--navy);
+        }
+
+        /* Counseling Referral Styles */
+        .referral-history-container {
+            background: var(--light-gray);
+            border-radius: 16px;
+            padding: 40px;
+        }
+
+        .referral-history-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--dark-navy);
+            margin-bottom: 30px;
+        }
+
+        .referral-table-wrapper {
+            background: var(--white);
+            border-radius: 12px;
+            overflow-x: auto;
+        }
+
+        .referral-history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .referral-history-table thead {
+            background: var(--white);
+        }
+
+        .referral-history-table th {
+            padding: 15px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark-navy);
+            border: 1px solid var(--dark-navy);
+        }
+
+        .referral-history-table td {
+            padding: 12px 15px;
+            font-size: 14px;
+            color: var(--dark-navy);
+            text-align: center;
+            border: 1px solid var(--dark-navy);
+        }
+
+        .referral-history-table tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        .view-link {
+            color: var(--dark-navy);
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .view-link:hover {
+            color: var(--navy);
+        }
+
+        /* Counseling Referral Detail Styles */
+        .referral-detail-container {
+            background: var(--light-gray);
+            border-radius: 16px;
+            padding: 40px;
+        }
+
+        .referral-detail-header {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .referral-detail-avatar {
+            width: 80px;
+            height: 80px;
+            background: var(--dark-navy);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: var(--white);
+            flex-shrink: 0;
+        }
+
+        .referral-detail-info {
+            flex: 1;
+            font-size: 16px;
+            color: var(--dark-navy);
+            line-height: 1.8;
+        }
+
+        .referral-detail-info strong {
+            font-weight: 600;
+        }
+
+        .referral-status {
+            text-align: right;
+            font-size: 16px;
+            color: var(--dark-navy);
+        }
+
+        .referral-status strong {
+            font-weight: 600;
+        }
+
+        .status-pending {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .referral-detail-form {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 40px;
+        }
+
+        .referral-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .referral-form-column {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .referral-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .referral-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark-navy);
+        }
+
+        .referral-input-box {
+            background: var(--light-gray);
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 15px;
+            color: var(--dark-navy);
+        }
+
+        .referral-textarea-box {
+            background: var(--light-gray);
+            border-radius: 8px;
+            padding: 15px 20px;
+            min-height: 100px;
+            font-size: 15px;
+            color: var(--dark-navy);
+        }
+
+        .referral-file-box {
+            background: var(--light-gray);
+            border-radius: 8px;
+            padding: 12px 20px;
+        }
+
+        .file-link-text {
+            font-size: 15px;
+            color: var(--dark-navy);
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .session-inputs {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .session-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .session-label {
+            font-size: 14px;
+            color: var(--dark-navy);
+            font-weight: 500;
+        }
+
+        .session-input {
+            flex: 1;
+            background: var(--light-gray);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 15px;
+            color: var(--dark-navy);
+        }
+
+        .session-input:focus {
+            outline: 2px solid var(--navy);
+        }
+
+        .referral-action-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .btn-end-session {
+            background: #dc3545;
+            color: var(--white);
+            border: none;
+            border-radius: 25px;
+            padding: 14px 40px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-end-session:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn-send-progress {
+            background: var(--green);
+            color: var(--white);
+            border: none;
+            border-radius: 25px;
+            padding: 14px 40px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-send-progress:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 80px;
+            }
+
+            .logo-description,
+            .nav-item span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 80px;
+            }
+
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .referrals-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .manage-offense-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .offense-content {
+                grid-template-columns: 1fr;
+            }
+
+            .referral-form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .dashboard-content {
+                padding: 20px;
+            }
+
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .referrals-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .manage-offense-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .offense-level-section {
+                padding: 25px;
+            }
+
+            .referral-detail-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .referral-status {
+                text-align: center;
+            }
+
+            .referral-action-buttons {
+                flex-direction: column;
+            }
+
+            .session-inputs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-section">
+                <div class="logo-box">
+                    <span class="logo-text">HIMC</span>
+                </div>
+                <div class="logo-description">
+                    <div class="logo-title">Holy Infant Montessori Center</div>
+                    <div class="logo-subtitle">Disciplinary Services</div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-item active" onclick="navigateToHome()">
+                    <span class="nav-icon">🏠</span>
+                    <span>Home</span>
+                </div>
+                <div class="nav-item" onclick="navigateToManageOffense()">
+                    <span class="nav-icon">📁</span>
+                    <span>Manage Offense</span>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="page-title-section">
+                    <span class="page-icon">🏠</span>
+                    <div>
+                        <div class="page-title">Dashboard</div>
+                        <div class="page-subtitle">Welcome Back, Counselor!</div>
+                    </div>
+                </div>
+
+                <div class="user-section">
+                    <span class="notification-icon">🔔</span>
+                    <div class="user-profile">
+                        <div class="user-avatar">👤</div>
+                        <div class="user-info" onclick="toggleUserDropdown()">
+                            <div class="user-name">Counselor</div>
+                            <div class="user-email">counsel.himc.edu.ph</div>
+                        </div>
+                        
+                        <!-- User Dropdown Menu -->
+                        <div id="userDropdown" class="user-dropdown">
+                            <div class="dropdown-header">
+                                <div class="dropdown-username">Counselor</div>
+                                <div class="dropdown-email">counsel.himc.edu.ph</div>
+                            </div>
+                            <div class="dropdown-menu-item" onclick="editUsername()">
+                                <span>👤</span> Edit Username
+                            </div>
+                            <div class="dropdown-menu-item" onclick="changePassword()">
+                                <span>🔒</span> Change Password
+                            </div>
+                            <div class="dropdown-menu-item logout" onclick="logout()">
+                                <span>🚪</span> Logout
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Home -->
+            <div id="homePage" class="dashboard-content">
+                <!-- Stats Cards -->
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <div class="stat-card-title">New Referral</div>
+                        <div class="stat-card-value">2</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-card-title">Active Referral</div>
+                        <div class="stat-card-value">5</div>
+                    </div>
+                </div>
+
+                <!-- Announcement Banner -->
+                <div class="announcement-banner">
+                    <div class="announcement-icon">📢</div>
+                    <div class="announcement-content">
+                        <span class="announcement-label">Announcement:</span>
+                        <span>Disciplinary announcements will appear here...</span>
+                    </div>
+                </div>
+
+                <!-- Incoming Referrals -->
+                <h2 class="section-title">Incoming Referrals</h2>
+                <div class="referrals-grid">
+                    <div class="referral-card">
+                        <div class="referral-name">Juan Dela Cruz</div>
+                        <div class="referral-reason">Bullying</div>
+                        <button class="btn-start" onclick="startReferral()">Start</button>
+                    </div>
+
+                    <div class="referral-card">
+                        <div class="referral-name">Juan Dela Cruz</div>
+                        <div class="referral-reason">Attendance issue</div>
+                        <button class="btn-start" onclick="startReferral()">Start</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manage Offense Page -->
+            <div id="manageOffensePage" class="dashboard-content hidden">
+                <div class="page-header">
+                    <span class="page-header-icon">📁</span>
+                    <h2 class="page-header-title">Manage Offense</h2>
+                </div>
+
+                <div class="manage-offense-grid">
+                    <div class="manage-offense-card" onclick="navigateToDisciplinaryMeasures()">
+                        <h3 class="manage-offense-card-title">The HIMC Disciplinary<br>Measures</h3>
+                    </div>
+                    
+                    <div class="manage-offense-card" onclick="navigateToCounselingReferral()">
+                        <h3 class="manage-offense-card-title">Counseling Referral</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Disciplinary Measures Page -->
+            <div id="disciplinaryMeasuresPage" class="dashboard-content hidden">
+                <button class="back-button" onclick="backToManageOffense()">
+                    <div class="back-icon">←</div>
+                    <span>The HIMC Disciplinary Measures</span>
+                </button>
+
+                <div class="disciplinary-content">
+                    <!-- Level 1 -->
+                    <div class="offense-level-section">
+                        <h3 class="offense-level-title">LEVEL 1 - Negligence to Fulfill Basic Duties</h3>
+                        
+                        <div class="offense-content">
+                            <ul class="offense-list">
+                                <li>Tardiness</li>
+                                <li>Unexpected absences</li>
+                                <li>Wearing inappropriate attire</li>
+                                <li>Failure to submit correspondence / have materials a 3rd time</li>
+                                <li>Sleeping in class</li>
+                                <li>Violation of SOP's</li>
+                            </ul>
+                            
+                            <ul class="offense-list">
+                                <li>Misbehavior</li>
+                                <li>Improper haircut</li>
+                                <li>No ID or No gate pass</li>
+                                <li>Loitering during class hours</li>
+                                <li>Littering</li>
+                                <li>Trespassing</li>
+                                <li>Disruption of classes.</li>
+                            </ul>
+                        </div>
+
+                        <div class="penalties-section">
+                            <h4 class="penalties-title">Penalties for Level 1 Offenses</h4>
+                            <ul class="penalties-list">
+                                <li>1st Offense - Reminder + 1 demerit</li>
+                                <li>2nd Offense - Reminder + 2 demerits</li>
+                                <li>3rd Offense - Reprimand + 3 demerits</li>
+                                <li>4th Offense onwards - Parent Notification + 4 demerits</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Level 2 -->
+                    <div class="offense-level-section">
+                        <h3 class="offense-level-title">LEVEL 2 - Minor Behavioral Infractions or Violations of Basic School Rules and Regulations</h3>
+                        
+                        <div class="offense-content">
+                            <ul class="offense-list">
+                                <li>Any disruptive behavior/audio/video/material or physical appearance which distracts/affects co-students or the whole class</li>
+                                <li>Using vulgar language</li>
+                                <li>Refusal to do assigned tasks/participate in class discussions and/or join in school-related activities</li>
+                                <li>Bringing electronic gadgets inside the classroom</li>
+                                <li>Vandalism</li>
+                            </ul>
+                            
+                            <ul class="offense-list">
+                                <li>Putting temporary marks on their bodies</li>
+                                <li>Misdemeanor (i.e. PDA, talking back to authorities and elders, showing disrespectful gestures, etc.)</li>
+                                <li>Loitering outside premises during class hours or vacant time</li>
+                                <li>Use of gadgets without permission</li>
+                            </ul>
+                        </div>
+
+                        <div class="penalties-section">
+                            <h4 class="penalties-title">Penalties for Level 2 Offenses</h4>
+                            <ul class="penalties-list">
+                                <li>1st Offense - Parent Notification + 2 demerits</li>
+                                <li>2nd Offense - Parent Notification + 4 demerits</li>
+                                <li>3rd Offense - Parent Notification + 1 day suspension + 6 demerits</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Level 3 -->
+                    <div class="offense-level-section">
+                        <h3 class="offense-level-title">LEVEL 3 - Acts of Disrespect and Dishonesty</h3>
+                        
+                        <div class="offense-content">
+                            <ul class="offense-list">
+                                <li>Forgery</li>
+                                <li>Theft</li>
+                                <li>Cutting classes</li>
+                                <li>Bribery</li>
+                                <li>Dishonesty</li>
+                            </ul>
+                            
+                            <ul class="offense-list">
+                                <li>Gambling</li>
+                                <li>Lewd Act</li>
+                                <li>Insubordination</li>
+                                <li>Vandalism (if proven)</li>
+                            </ul>
+                        </div>
+
+                        <div class="penalties-section">
+                            <h4 class="penalties-title">Penalties for Level 3 Offenses</h4>
+                            <ul class="penalties-list">
+                                <li>1st Offense - Parent Notification + 1 day suspension + 13 demerits</li>
+                                <li>2nd Offense - Parent Notification + 2 days suspension + 13 demerits</li>
+                                <li>3rd Offense - Parent Notification + 3 days suspension + warning for dropping from school roll + 13 demerits</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Level 4 -->
+                    <div class="offense-level-section">
+                        <h3 class="offense-level-title">LEVEL 4 - Acts of Unbecoming of an HIMC Student</h3>
+                        
+                        <div class="offense-content">
+                            <ul class="offense-list">
+                                <li>Cheating</li>
+                                <li>Any form of bullying</li>
+                                <li>Hazing</li>
+                                <li>Sexual harassment</li>
+                                <li>Initiating fights or fighting</li>
+                                <li>Extortion</li>
+                            </ul>
+                            
+                            <ul class="offense-list">
+                                <li>Possession or bringing deadly weapons (bladed weapons, guns, etc.)</li>
+                                <li>Possession, use, or sale of prohibited drugs</li>
+                                <li>Possession, use, drinking, or sale of alcoholic beverages</li>
+                                <li>Any act punishable by law</li>
+                            </ul>
+                        </div>
+
+                        <div class="penalties-section">
+                            <h4 class="penalties-title">Penalties for Level 4 Offenses</h4>
+                            <ul class="penalties-list">
+                                <li>1st Offense - Parent Notification + 1 day suspension + 26 demerits</li>
+                                <li>2nd Offense - Parent Notification + 2 days suspension + Conduct probation + 26 demerits</li>
+                                <li>3rd Offense - Parent Notification + Removal from attending synchronous classes for the remainder of the quarter + warning for dropping from school roll + 26 demerits</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Counseling Referral Page -->
+            <div id="counselingReferralPage" class="dashboard-content hidden">
+                <button class="back-button" onclick="backToManageOffense()">
+                    <div class="back-icon">←</div>
+                    <span>Counseling Referral</span>
+                </button>
+
+                <div class="referral-history-container">
+                    <h2 class="referral-history-title">Referral History</h2>
+                    
+                    <div class="referral-table-wrapper">
+                        <table class="referral-history-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Grade</th>
+                                    <th>Section</th>
+                                    <th>Remarks</th>
+                                    <th>Status</th>
+                                    <th>Date Sent</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Dela Cruz, Juan</td>
+                                    <td>10</td>
+                                    <td>St. Xavier</td>
+                                    <td>Repeated bullying case</td>
+                                    <td>Pending</td>
+                                    <td>06/17/2025</td>
+                                    <td><a href="#" class="view-link" onclick="viewReferral(event)">view</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Santos, Maria</td>
+                                    <td>10</td>
+                                    <td>St. Aquinas</td>
+                                    <td>Lack of behavior improvement</td>
+                                    <td>Pending</td>
+                                    <td>06/10/2025</td>
+                                    <td><a href="#" class="view-link" onclick="viewReferral(event)">view</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Mendoza, Clara</td>
+                                    <td>9</td>
+                                    <td>St. Kostka</td>
+                                    <td>Social isolation issue</td>
+                                    <td>Ongoing</td>
+                                    <td>06/02/2025</td>
+                                    <td><a href="#" class="view-link" onclick="viewReferral(event)">view</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Tolentino, Vince</td>
+                                    <td>9</td>
+                                    <td>St. Ruiz</td>
+                                    <td>Repeated bullying case</td>
+                                    <td>Ongoing</td>
+                                    <td>05/27/2025</td>
+                                    <td><a href="#" class="view-link" onclick="viewReferral(event)">view</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Villegas, Angel</td>
+                                    <td>7</td>
+                                    <td>St. Augustine</td>
+                                    <td>Repeated bullying case</td>
+                                    <td>Ongoing</td>
+                                    <td>05/27/2025</td>
+                                    <td><a href="#" class="view-link" onclick="viewReferral(event)">view</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Navarro, Yheng</td>
+                                    <td>10</td>
+                                    <td>St. Janopah</td>
+                                    <td>Repeated bullying case</td>
+                                    <td>Ongoing</td>
+                                    <td>05/27/2025</td>
+                                    <td><a href="#" class="view-link" onclick="viewReferral(event)">view</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Rosales, Miguel</td>
+                                    <td>9</td>
+                                    <td>St. Pio</td>
+                                    <td>Repeated bullying case</td>
+                                    <td>Ongoing</td>
+                                    <td>05/27/2025</td>
+                                    <td><a href="#" class="view-link" onclick="viewReferral(event)">view</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Mendoza, Clara</td>
+                                    <td>9</td>
+                                    <td>St. Kostka</td>
+                                    <td>Repeated bullying case</td>
+                                    <td>Completed</td>
+                                    <td>05/27/2025</td>
+                                    <td><a href="#" class="view-link" onclick="viewReferral(event)">view</a></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Counseling Referral Detail Page -->
+            <div id="counselingReferralDetailPage" class="dashboard-content hidden">
+                <button class="back-button" onclick="backToCounselingReferral()">
+                    <div class="back-icon">←</div>
+                    <span>Counseling Referral</span>
+                </button>
+
+                <div class="referral-detail-container">
+                    <!-- Student Info Header -->
+                    <div class="referral-detail-header">
+                        <div class="referral-detail-avatar">👤</div>
+                        <div class="referral-detail-info">
+                            <div><strong>Name:</strong> Dela Cruz, Juan</div>
+                            <div><strong>Grade and Section:</strong> 10 - St. Xavier</div>
+                        </div>
+                        <div class="referral-status">
+                            <strong>Referral Status:</strong> <span class="status-pending">Pending</span>
+                        </div>
+                    </div>
+
+                    <!-- Referral Details Form -->
+                    <div class="referral-detail-form">
+                        <div class="referral-form-grid">
+                            <!-- Left Column -->
+                            <div class="referral-form-column">
+                                <div class="referral-form-group">
+                                    <label class="referral-label">Referral Date:</label>
+                                    <div class="referral-input-box">06/17/2025</div>
+                                </div>
+
+                                <div class="referral-form-group">
+                                    <label class="referral-label">Remark:</label>
+                                    <div class="referral-textarea-box">Repeated Bullying Case</div>
+                                </div>
+
+                                <div class="referral-form-group">
+                                    <label class="referral-label">Attached file:</label>
+                                    <div class="referral-file-box">
+                                        <span class="file-link-text">offenserecord.pdf</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Column -->
+                            <div class="referral-form-column">
+                                <div class="referral-form-group">
+                                    <label class="referral-label">Progress Report:</label>
+                                    <div class="referral-textarea-box"></div>
+                                </div>
+
+                                <div class="referral-form-group">
+                                    <label class="referral-label">Counseling Session:</label>
+                                    <div class="session-inputs">
+                                        <div class="session-input-group">
+                                            <span class="session-label">Start:</span>
+                                            <input type="text" class="session-input" placeholder="">
+                                        </div>
+                                        <div class="session-input-group">
+                                            <span class="session-label">Finish:</span>
+                                            <input type="text" class="session-input" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="referral-form-group">
+                                    <label class="referral-label">Remark/s:</label>
+                                    <div class="referral-textarea-box"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="referral-action-buttons">
+                            <button class="btn-end-session" onclick="endSession()">End Session</button>
+                            <button class="btn-send-progress" onclick="sendProgressReport()">Send Progress Report</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function navigateToHome() {
+            document.getElementById('homePage').classList.remove('hidden');
+            document.getElementById('manageOffensePage').classList.add('hidden');
+            document.getElementById('disciplinaryMeasuresPage').classList.add('hidden');
+            document.getElementById('counselingReferralPage').classList.add('hidden');
+            document.getElementById('counselingReferralDetailPage').classList.add('hidden');
+            
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach((item, index) => {
+                if (index === 0) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            
+            updateTopBar('🏠', 'Dashboard', 'Welcome Back, Counselor!');
+        }
+
+        function navigateToManageOffense() {
+            document.getElementById('homePage').classList.add('hidden');
+            document.getElementById('manageOffensePage').classList.remove('hidden');
+            document.getElementById('disciplinaryMeasuresPage').classList.add('hidden');
+            document.getElementById('counselingReferralPage').classList.add('hidden');
+            document.getElementById('counselingReferralDetailPage').classList.add('hidden');
+            
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach((item, index) => {
+                if (index === 1) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            
+            updateTopBar('📁', 'Manage Offense', '');
+        }
+
+        function navigateToDisciplinaryMeasures() {
+            document.getElementById('homePage').classList.add('hidden');
+            document.getElementById('manageOffensePage').classList.add('hidden');
+            document.getElementById('disciplinaryMeasuresPage').classList.remove('hidden');
+            document.getElementById('counselingReferralPage').classList.add('hidden');
+            document.getElementById('counselingReferralDetailPage').classList.add('hidden');
+            
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach((item, index) => {
+                if (index === 1) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            
+            updateTopBar('📁', 'The HIMC Disciplinary Measures', '');
+        }
+
+        function navigateToCounselingReferral() {
+            document.getElementById('homePage').classList.add('hidden');
+            document.getElementById('manageOffensePage').classList.add('hidden');
+            document.getElementById('disciplinaryMeasuresPage').classList.add('hidden');
+            document.getElementById('counselingReferralPage').classList.remove('hidden');
+            document.getElementById('counselingReferralDetailPage').classList.add('hidden');
+            
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach((item, index) => {
+                if (index === 1) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            
+            updateTopBar('📁', 'Counseling Referral', '');
+        }
+
+        function backToManageOffense() {
+            document.getElementById('homePage').classList.add('hidden');
+            document.getElementById('manageOffensePage').classList.remove('hidden');
+            document.getElementById('disciplinaryMeasuresPage').classList.add('hidden');
+            document.getElementById('counselingReferralPage').classList.add('hidden');
+            document.getElementById('counselingReferralDetailPage').classList.add('hidden');
+            
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach((item, index) => {
+                if (index === 1) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            
+            updateTopBar('📁', 'Manage Offense', '');
+        }
+
+        function viewReferral(event) {
+            event.preventDefault();
+            document.getElementById('homePage').classList.add('hidden');
+            document.getElementById('manageOffensePage').classList.add('hidden');
+            document.getElementById('disciplinaryMeasuresPage').classList.add('hidden');
+            document.getElementById('counselingReferralPage').classList.add('hidden');
+            document.getElementById('counselingReferralDetailPage').classList.remove('hidden');
+            
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach((item, index) => {
+                if (index === 1) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            
+            updateTopBar('📁', 'Counseling Referral', '');
+        }
+
+        function backToCounselingReferral() {
+            document.getElementById('homePage').classList.add('hidden');
+            document.getElementById('manageOffensePage').classList.add('hidden');
+            document.getElementById('disciplinaryMeasuresPage').classList.add('hidden');
+            document.getElementById('counselingReferralPage').classList.remove('hidden');
+            document.getElementById('counselingReferralDetailPage').classList.add('hidden');
+            
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach((item, index) => {
+                if (index === 1) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            
+            updateTopBar('📁', 'Counseling Referral', '');
+        }
+
+        function updateTopBar(icon, title, subtitle) {
+            document.querySelector('.page-icon').textContent = icon;
+            document.querySelector('.page-title').textContent = title;
+            const subtitleElement = document.querySelector('.page-subtitle');
+            if (subtitle) {
+                subtitleElement.textContent = subtitle;
+                subtitleElement.style.display = 'block';
+            } else {
+                subtitleElement.style.display = 'none';
+            }
+        }
+
+        function startReferral() {
+            alert('Starting referral session...');
+        }
+
+        function endSession() {
+            if (confirm('Are you sure you want to end this counseling session?')) {
+                alert('Session ended successfully!');
+                backToCounselingReferral();
+            }
+        }
+
+        function sendProgressReport() {
+            alert('Progress report sent successfully!');
+        }
+
+        // User Dropdown Functions
+        function toggleUserDropdown() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        function editUsername() {
+            alert('Edit Username - Coming Soon');
+            toggleUserDropdown();
+        }
+
+        function changePassword() {
+            alert('Change Password - Coming Soon');
+            toggleUserDropdown();
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = 'https://d-oview.vercel.app/';
+            }
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('userDropdown');
+            const userInfo = document.querySelector('.user-info');
+            
+            if (dropdown && userInfo && !userInfo.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
