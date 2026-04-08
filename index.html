@@ -922,6 +922,7 @@ function renderCounselorDMPage() {
         updateTopBar('🏠', 'Dashboard', 'Welcome Back, Counselor!');
         loadStats();
         loadIncomingReferrals();
+        loadAnnouncement();
     }
 
     function navigateToManageOffense() {
@@ -929,6 +930,22 @@ function renderCounselorDMPage() {
         setNavActive(1);
         updateTopBar('📁', 'Manage Offense', '');
     }
+
+    async function loadAnnouncement() {
+    try {
+        const res  = await fetch(`${BASE}/save_announcement.php`, {
+            headers: { 'ngrok-skip-browser-warning': 'true' }
+        });
+        const data = await res.json();
+        const msg  = data.text || '';
+        if (msg) {
+            const el = document.querySelector('.announcement-content span:last-child');
+            if (el) el.textContent = msg;
+        }
+    } catch(err) {
+        console.error('loadAnnouncement failed:', err);
+    }
+}
 
     async function navigateToDisciplinaryMeasures() {
     showPage('disciplinaryMeasuresPage');
