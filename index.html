@@ -609,6 +609,52 @@
     </main>
 </div>
 
+<!-- ══ LOGOUT MODAL ══ -->
+<div id="logoutModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:16px;padding:50px 60px;text-align:center;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
+        <div style="font-size:52px;margin-bottom:16px;">🚪</div>
+        <div style="font-size:22px;font-weight:700;color:#2d2550;margin-bottom:8px;">Log out?</div>
+        <div style="font-size:14px;color:#666;margin-bottom:32px;">Are you sure you want to log out of your account?</div>
+        <div style="display:flex;gap:14px;justify-content:center;">
+            <button onclick="closeLogoutModal()" style="padding:12px 36px;border-radius:8px;font-size:15px;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer;border:none;background:#f0f0f0;color:#2d2550;">Cancel</button>
+            <button onclick="confirmLogout()" style="padding:12px 36px;border-radius:8px;font-size:15px;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer;border:none;background:#dc3545;color:#fff;">Log Out</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══ COMING SOON MODAL ══ -->
+<div id="comingSoonModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:16px;padding:50px 60px;text-align:center;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
+        <div style="font-size:52px;margin-bottom:16px;">🚧</div>
+        <div style="font-size:22px;font-weight:700;color:#2d2550;margin-bottom:8px;" id="comingSoonTitle">Coming Soon</div>
+        <div style="font-size:14px;color:#666;margin-bottom:30px;">This feature is not yet available. Please check back later.</div>
+        <button onclick="closeComingSoonModal()" style="background:#2d2550;color:#d4a650;border:none;border-radius:8px;padding:12px 40px;font-size:15px;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer;">Got it</button>
+    </div>
+</div>
+
+<!-- ══ INFO MODAL ══ -->
+<div id="infoModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:16px;padding:50px 60px;text-align:center;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
+        <div style="font-size:52px;margin-bottom:16px;" id="infoModalIcon">ℹ️</div>
+        <div style="font-size:20px;font-weight:700;color:#2d2550;margin-bottom:8px;" id="infoModalTitle">Notice</div>
+        <div style="font-size:14px;color:#666;margin-bottom:30px;line-height:1.6;" id="infoModalMessage"></div>
+        <button onclick="closeInfoModal()" style="background:#2d2550;color:#d4a650;border:none;border-radius:8px;padding:12px 40px;font-size:15px;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer;">OK</button>
+    </div>
+</div>
+
+<!-- ══ CONFIRM MODAL ══ -->
+<div id="confirmModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:16px;padding:50px 60px;text-align:center;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
+        <div style="font-size:52px;margin-bottom:16px;" id="confirmModalIcon">⚠️</div>
+        <div style="font-size:20px;font-weight:700;color:#2d2550;margin-bottom:8px;" id="confirmModalTitle">Confirm</div>
+        <div style="font-size:14px;color:#666;margin-bottom:32px;line-height:1.6;" id="confirmModalMessage"></div>
+        <div style="display:flex;gap:14px;justify-content:center;">
+            <button onclick="closeConfirmModal(false)" style="padding:12px 36px;border-radius:8px;font-size:15px;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer;border:none;background:#f0f0f0;color:#2d2550;">Cancel</button>
+            <button id="confirmModalOkBtn" onclick="closeConfirmModal(true)" style="padding:12px 36px;border-radius:8px;font-size:15px;font-weight:600;font-family:'Outfit',sans-serif;cursor:pointer;border:none;background:#2d2550;color:#d4a650;">Confirm</button>
+        </div>
+    </div>
+</div>
+    
 <script>
     // ── CONFIG ────────────────────────────────────────────────
     // If using ngrok, put your full ngrok URL here, e.g. 'https://xxxx.ngrok-free.app'
@@ -738,7 +784,8 @@ function renderCounselorDMPage() {
     }
 
     async function startReferral(id) {
-        if (!confirm('Start counseling session for this referral?')) return;
+        const ok = await showConfirm('Start Session', 'Start counseling session for this referral?', 'Start', '🟢');
+        if (!ok) return;
         try {
             const now = toMySQLDatetime(new Date());
             const data = await apiFetch('update_referral_status.php', {
@@ -753,10 +800,10 @@ function renderCounselorDMPage() {
                 await loadStats();
                 await loadIncomingReferrals();
             } else {
-                alert('Failed to start session: ' + (data.message || 'Unknown error'));
+                showInfo('Error', 'Failed to start session: ' + (data.message || 'Unknown error'), '❌');
             }
         } catch (e) {
-            alert('Network error. Please try again.');
+            showInfo('Network Error', 'Could not connect. Please try again.', '❌');
         }
     }
 
@@ -810,13 +857,13 @@ function renderCounselorDMPage() {
         try {
             const data = await apiFetch(`get_counselor_referrals.php?referral_id=${id}`);
             if (!data.success || data.referrals.length === 0) {
-                alert('Could not load referral details.');
+                showInfo('Error', 'Could not load referral details.', '❌');
                 return;
             }
             const r = data.referrals[0];
             populateDetail(r);
         } catch (e) {
-            alert('Network error loading referral details.');
+            showInfo('Network Error', 'Could not connect while loading referral details.', '❌');
         }
     }
 
@@ -860,18 +907,19 @@ function renderCounselorDMPage() {
                 body: JSON.stringify(payload)
             });
             if (data.success) {
-                alert('Progress report saved successfully!');
+                showInfo('Saved', 'Progress report saved successfully!', '✅');
             } else {
-                alert('Failed to save: ' + (data.message || 'Unknown error'));
+                showInfo('Error', 'Failed to save: ' + (data.message || 'Unknown error'), '❌');
             }
         } catch (e) {
-            alert('Network error. Please try again.');
+            showInfo('Network Error', 'Could not connect. Please try again.', '❌');
         }
     }
 
     async function endSession() {
         if (!currentReferralId) return;
-        if (!confirm('Are you sure you want to end this counseling session?')) return;
+        const ok = await showConfirm('End Session', 'Are you sure you want to end this counseling session?', 'End Session', '🔴');
+        if (!ok) return;
 
         const sessionEndRaw   = document.getElementById('detailSessionEnd').value;
         const progressNotes   = document.getElementById('detailProgressNotes').value.trim();
@@ -893,14 +941,13 @@ function renderCounselorDMPage() {
                 body: JSON.stringify(payload)
             });
             if (data.success) {
-                alert('Session ended successfully!');
-                currentReferralId = null;
-                backToCounselingReferral();
+                showInfo('Done', 'Session ended successfully!', '✅');
+                setTimeout(() => { closeInfoModal(); currentReferralId = null; backToCounselingReferral(); }, 1800);
             } else {
-                alert('Failed to end session: ' + (data.message || 'Unknown error'));
+                showInfo('Error', 'Failed to end session: ' + (data.message || 'Unknown error'), '❌');
             }
         } catch (e) {
-            alert('Network error. Please try again.');
+            showInfo('Network Error', 'Could not connect. Please try again.', '❌');
         }
     }
 
@@ -988,14 +1035,41 @@ function renderCounselorDMPage() {
         document.getElementById('userDropdown').classList.toggle('show');
     }
 
-    function editUsername()   { alert('Edit Username - Coming Soon'); toggleUserDropdown(); }
-    function changePassword() { alert('Change Password - Coming Soon'); toggleUserDropdown(); }
+    // ── Modal helpers ─────────────────────────────────────────
+    function showModal(id)  { const m=document.getElementById(id); m.style.display='flex'; }
+    function hideModal(id)  { document.getElementById(id).style.display='none'; }
 
-    function logout() {
-        if (confirm('Are you sure you want to logout?')) {
-            window.location.href = 'https://login-topaz-iota.vercel.app/';
-        }
+    function showInfo(title, message, icon='ℹ️') {
+        document.getElementById('infoModalIcon').textContent    = icon;
+        document.getElementById('infoModalTitle').textContent   = title;
+        document.getElementById('infoModalMessage').textContent = message;
+        showModal('infoModal');
     }
+    function closeInfoModal() { hideModal('infoModal'); }
+
+    let _confirmResolve = null;
+    function showConfirm(title, message, confirmLabel='Confirm', icon='⚠️') {
+        return new Promise(resolve => {
+            _confirmResolve = resolve;
+            document.getElementById('confirmModalIcon').textContent    = icon;
+            document.getElementById('confirmModalTitle').textContent   = title;
+            document.getElementById('confirmModalMessage').textContent = message;
+            document.getElementById('confirmModalOkBtn').textContent   = confirmLabel;
+            showModal('confirmModal');
+        });
+    }
+    function closeConfirmModal(result) {
+        hideModal('confirmModal');
+        if (_confirmResolve) { _confirmResolve(result); _confirmResolve = null; }
+    }
+
+    function editUsername()   { toggleUserDropdown(); document.getElementById('comingSoonTitle').textContent='Edit Username';   showModal('comingSoonModal'); }
+    function changePassword() { toggleUserDropdown(); document.getElementById('comingSoonTitle').textContent='Change Password'; showModal('comingSoonModal'); }
+    function closeComingSoonModal() { hideModal('comingSoonModal'); }
+
+    function logout() { showModal('logoutModal'); toggleUserDropdown(); }
+    function closeLogoutModal()  { hideModal('logoutModal'); }
+    function confirmLogout()     { window.location.href = 'https://login-topaz-iota.vercel.app/'; }
 
     document.addEventListener('click', function(e) {
         const dropdown = document.getElementById('userDropdown');
