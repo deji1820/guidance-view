@@ -30,6 +30,66 @@
             height: 100vh; left: 0; top: 0;
         }
 
+        /* ── Offense Info Tooltip ── */
+.offense-info-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.info-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--dark-navy);
+    color: var(--white);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    transition: background 0.2s;
+}
+
+.info-circle:hover { background: var(--navy); }
+
+.info-circle .info-tooltip {
+    display: none;
+    position: absolute;
+    left: 26px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--dark-navy);
+    color: var(--white);
+    font-size: 12px;
+    font-weight: 400;
+    padding: 8px 12px;
+    border-radius: 8px;
+    width: max-content;
+    max-width: 250px;
+    white-space: normal;
+    z-index: 999;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+    line-height: 1.5;
+    pointer-events: none;
+}
+
+.info-circle .info-tooltip::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 5px 6px 5px 0;
+    border-style: solid;
+    border-color: transparent var(--dark-navy) transparent transparent;
+}
+
+.info-circle:hover .info-tooltip { display: block; }
+
         .logo-section {
             display: flex; align-items: center; gap: 15px;
             margin-bottom: 50px; padding-bottom: 30px;
@@ -710,6 +770,15 @@ function escHtml(str) {
     return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+function buildOffenseLi(o) {
+    const title = o.title || o;
+    const desc  = (o.description || '').trim();
+    const infoIcon = desc
+        ? `<span class="info-circle">i<span class="info-tooltip">${escHtml(desc)}</span></span>`
+        : '';
+    return `<li><span class="offense-info-wrapper">${escHtml(title)}${infoIcon}</span></li>`;
+}
+
 function renderCounselorDMPage() {
     [1,2,3,4].forEach(lvl => {
         const offenses = offenseTypesByLevel[lvl] || offenseTypesByLevel[String(lvl)] || [];
@@ -721,20 +790,17 @@ function renderCounselorDMPage() {
                 colB.innerHTML = '';
             } else {
                 const half = Math.ceil(offenses.length / 2);
-                colA.innerHTML = offenses.slice(0, half).map(o => `<li>${escHtml(o.title || o)}</li>`).join('');
-                colB.innerHTML = offenses.slice(half).map(o  => `<li>${escHtml(o.title || o)}</li>`).join('');
+                colA.innerHTML = offenses.slice(0, half).map(o => buildOffenseLi(o)).join('');
+                colB.innerHTML = offenses.slice(half).map(o => buildOffenseLi(o)).join('');
             }
         }
-
         const penalties = penaltiesByLevel[lvl] || penaltiesByLevel[String(lvl)] || [];
         const penUl     = document.getElementById(`cPenalty${lvl}`);
         if (!penUl) return;
-
         if (!penalties.length) {
             penUl.innerHTML = `<li style="color:#aaa;font-style:italic;">No penalties defined.</li>`;
             return;
         }
-
         penUl.innerHTML = penalties.map((p, i) => {
             const occLabel     = occurrenceLabel[p.occurrence] || `${p.occurrence}th`;
             const isLast       = i === penalties.length - 1;
