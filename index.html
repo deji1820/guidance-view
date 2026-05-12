@@ -915,12 +915,13 @@ function renderCounselorDMPage() {
         
 
         // Status badge
-        const statusEl  = document.getElementById('detailStatus');
-        statusEl.textContent = r.status;
-        statusEl.className   = '';
-        if (r.status === 'Open')       statusEl.className = 'status-open';
-        if (r.status === 'InProgress') statusEl.className = 'status-inprogress';
-        if (r.status === 'Closed')     statusEl.className = 'status-closed';
+        const statusEl = document.getElementById('detailStatus');
+statusEl.textContent = r.status;
+if (r.status === 'InProgress') statusEl.textContent = 'In Progress';
+statusEl.className = '';
+if (r.status === 'Open')       statusEl.className = 'status-open';
+if (r.status === 'InProgress') statusEl.className = 'status-inprogress';
+if (r.status === 'Closed')     statusEl.className = 'status-closed';
     }
 
     async function viewOffenseRecord(event, studentNumber, studentName) {
