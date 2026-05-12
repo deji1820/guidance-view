@@ -295,24 +295,24 @@
         .disciplinary-content::-webkit-scrollbar-thumb { background: var(--dark-navy); border-radius: 10px; }
         .disciplinary-content::-webkit-scrollbar-thumb:hover { background: var(--navy); }
 
-        .referral-history-container { background: var(--light-gray); border-radius: 16px; padding: 40px; }
-
-        .referral-history-title { font-size: 28px; font-weight: 700; color: var(--dark-navy); margin-bottom: 30px; }
-
-        .referral-table-wrapper { background: var(--white); border-radius: 12px; overflow-x: auto; }
-
-        .referral-history-table { width: 100%; border-collapse: collapse; }
-
-        .referral-history-table thead { background: var(--white); }
-
-        .referral-history-table th { padding: 15px; text-align: center; font-size: 14px; font-weight: 600; color: var(--dark-navy); border: 1px solid var(--dark-navy); }
-
-        .referral-history-table td { padding: 12px 15px; font-size: 14px; color: var(--dark-navy); text-align: center; border: 1px solid var(--dark-navy); }
-
-        .referral-history-table tbody tr:hover { background: #f9f9f9; }
-
-        .view-link { color: var(--dark-navy); text-decoration: underline; cursor: pointer; font-weight: 500; }
-        .view-link:hover { color: var(--navy); }
+        .referral-history-container { background: var(--white); border-radius: 16px; padding: 30px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+.referral-history-title { font-size: 20px; font-weight: 700; color: var(--dark-navy); margin-bottom: 20px; }
+.referral-table-wrapper { border-radius: 10px; overflow: hidden; border: 1px solid #f0f0f0; }
+.referral-history-table { width: 100%; border-collapse: collapse; }
+.referral-history-table thead { background: var(--dark-navy); }
+.referral-history-table th { padding: 14px 16px; text-align: left; font-size: 12px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 0.05em; border: none; }
+.referral-history-table td { padding: 14px 16px; font-size: 13px; color: var(--dark-navy); border-bottom: 1px solid #f0f0f0; text-align: left; }
+.referral-history-table tbody tr:last-child td { border-bottom: none; }
+.referral-history-table tbody tr:hover { background: #f5f3ff; }
+.referral-status-badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.badge-open { background: #fce4ec; color: #c62828; }
+.badge-inprogress { background: #fff3e0; color: #e65100; }
+.badge-closed { background: #e8f5e9; color: #2e7d32; }
+.action-links { display: flex; gap: 8px; }
+.view-link { color: var(--dark-navy); text-decoration: none; font-size: 12px; font-weight: 600; background: var(--light-gray); padding: 5px 12px; border-radius: 6px; transition: background 0.2s; cursor: pointer; }
+.view-link:hover { background: #d8d9db; }
+.view-offense-link { color: var(--white); text-decoration: none; font-size: 12px; font-weight: 600; background: var(--dark-navy); padding: 5px 12px; border-radius: 6px; transition: background 0.2s; cursor: pointer; }
+.view-offense-link:hover { background: var(--navy); }
 
         .referral-detail-container { background: var(--light-gray); border-radius: 16px; padding: 40px; }
 
@@ -576,32 +576,28 @@
 
         <!-- ── COUNSELING REFERRAL LIST PAGE ── -->
         <div id="counselingReferralPage" class="dashboard-content hidden">
-            <button class="back-button" onclick="backToManageOffense()">
-                <div class="back-icon">←</div>
-                <span>Counseling Referral</span>
-            </button>
-            <div class="referral-history-container">
-                <h2 class="referral-history-title">Referral History</h2>
-                <div class="referral-table-wrapper">
-                    <table class="referral-history-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Grade</th>
-                                <th>Section</th>
-                                <th>Remarks</th>
-                                <th>Status</th>
-                                <th>Date Sent</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="referralHistoryBody">
-                            <tr><td colspan="7" class="loading-state">Loading...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+    <div class="referral-history-container">
+        <h2 class="referral-history-title">📋 Referral History</h2>
+        <div class="referral-table-wrapper">
+            <table class="referral-history-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Grade</th>
+                        <th>Section</th>
+                        <th>Remarks</th>
+                        <th>Status</th>
+                        <th>Date Sent</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="referralHistoryBody">
+                    <tr><td colspan="7" style="text-align:center;color:#aaa;padding:30px;">Loading...</td></tr>
+                </tbody>
+            </table>
         </div>
+    </div>
+</div>
 
         <!-- ── COUNSELING REFERRAL DETAIL PAGE ── -->
         <div id="counselingReferralDetailPage" class="dashboard-content hidden">
@@ -875,29 +871,35 @@ function renderCounselorDMPage() {
 
     // ── REFERRAL HISTORY ──────────────────────────────────────
     async function loadReferralHistory() {
-        const tbody = document.getElementById('referralHistoryBody');
-        tbody.innerHTML = '<tr><td colspan="7" class="loading-state">Loading...</td></tr>';
-        try {
-            const data = await apiFetch('get_counselor_referrals.php');
-            if (!data.success || data.referrals.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No referral records found.</td></tr>';
-                return;
-            }
-            tbody.innerHTML = data.referrals.map(r => `
-                <tr>
-                    <td>${escHtml(r.student_name)}</td>
-                    <td>${escHtml(r.grade_level || '—')}</td>
-                    <td>${escHtml(r.section_name || '—')}</td>
-                    <td>${escHtml(r.reason || '—')}</td>
-                    <td>${escHtml(r.status)}</td>
-                    <td>${formatDate(r.referral_date)}</td>
-                    <td><a href="#" class="view-link" onclick="viewReferral(event, ${r.referral_id})">view</a></td>
-                </tr>
-            `).join('');
-        } catch (e) {
-            tbody.innerHTML = '<tr><td colspan="7" class="empty-state">Failed to load records.</td></tr>';
+    const tbody = document.getElementById('referralHistoryBody');
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#aaa;padding:30px;">Loading...</td></tr>';
+    try {
+        const data = await apiFetch('get_counselor_referrals.php');
+        if (!data.success || data.referrals.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#aaa;padding:30px;">No referral records found.</td></tr>';
+            return;
         }
+        tbody.innerHTML = data.referrals.map(r => {
+            const badgeClass = r.status === 'Open' ? 'badge-open' : r.status === 'InProgress' ? 'badge-inprogress' : 'badge-closed';
+            return `<tr>
+                <td style="font-weight:600;">${escHtml(r.student_name)}</td>
+                <td>${escHtml(r.grade_level || '—')}</td>
+                <td>${escHtml(r.section_name || '—')}</td>
+                <td style="color:#666;">${escHtml(r.reason || '—')}</td>
+                <td><span class="referral-status-badge ${badgeClass}">${escHtml(r.status)}</span></td>
+                <td style="color:#888;">${formatDate(r.referral_date)}</td>
+                <td>
+                    <div class="action-links">
+                        <a href="#" class="view-link" onclick="viewReferral(event, ${r.referral_id})">View</a>
+                        <a href="#" class="view-offense-link" onclick="viewOffenseRecord(event, '${escHtml(r.student_number || '')}', '${escHtml(r.student_name)}')">Offenses</a>
+                    </div>
+                </td>
+            </tr>`;
+        }).join('');
+    } catch (e) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#dc3545;padding:30px;">Failed to load records.</td></tr>';
     }
+}
 
     // ── REFERRAL DETAIL ───────────────────────────────────────
     async function viewReferral(event, id) {
@@ -953,6 +955,41 @@ function renderCounselorDMPage() {
         if (r.status === 'InProgress') statusEl.className = 'status-inprogress';
         if (r.status === 'Closed')     statusEl.className = 'status-closed';
     }
+
+    async function viewOffenseRecord(event, studentNumber, studentName) {
+    event.preventDefault();
+    if (!studentNumber) { showInfo('Error', 'No student number found for this referral.', '❌'); return; }
+    document.getElementById('offenseModalStudentInfo').innerHTML = `<strong style="color:var(--gold);">Name:</strong> ${escHtml(studentName)}&nbsp;&nbsp;|&nbsp;&nbsp;<strong style="color:var(--gold);">Student No:</strong> ${escHtml(studentNumber)}`;
+    document.getElementById('offenseModalTableBody').innerHTML = '<tr><td colspan="4" style="text-align:center;color:#aaa;padding:30px;">Loading...</td></tr>';
+    document.getElementById('offenseRecordModal').style.display = 'flex';
+    try {
+        const res = await fetch(`${BASE}/get_student_offenses.php?student_number=${encodeURIComponent(studentNumber)}`, {
+            headers: { 'ngrok-skip-browser-warning': 'true' }
+        });
+        const data = await res.json();
+        const offenses = (data.success && data.offenses) ? data.offenses : [];
+        const tbody = document.getElementById('offenseModalTableBody');
+        if (!offenses.length) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#aaa;padding:30px;">No offense records found.</td></tr>';
+            return;
+        }
+        const sorted = offenses.slice().sort((a, b) => (b.offense_date || '').localeCompare(a.offense_date || ''));
+        tbody.innerHTML = sorted.map(o => `
+            <tr style="border-bottom:1px solid #f0f0f0;">
+                <td style="padding:12px 16px;font-size:13px;color:#888;">${escHtml(o.offense_date || '—')}</td>
+                <td style="padding:12px 16px;font-size:13px;font-weight:500;">${escHtml(o.offense || '—')}</td>
+                <td style="padding:12px 16px;"><span style="display:inline-block;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;background:${o.offense_level==1?'#e8f5e9':o.offense_level==2?'#fff8e1':o.offense_level==3?'#fff3e0':'#fce4ec'};color:${o.offense_level==1?'#2e7d32':o.offense_level==2?'#f57f17':o.offense_level==3?'#e65100':'#c62828'};">Level ${escHtml(String(o.offense_level||'—'))}</span></td>
+                <td style="padding:12px 16px;font-size:13px;color:#666;">${escHtml(o.remarks || 'N/A')}</td>
+            </tr>
+        `).join('');
+    } catch(e) {
+        document.getElementById('offenseModalTableBody').innerHTML = '<tr><td colspan="4" style="text-align:center;color:#dc3545;padding:30px;">Failed to load.</td></tr>';
+    }
+}
+
+function closeOffenseRecordModal() {
+    document.getElementById('offenseRecordModal').style.display = 'none';
+}
 
     async function sendProgressReport() {
         if (!currentReferralId) return;
@@ -1138,11 +1175,12 @@ function renderCounselorDMPage() {
     function confirmLogout()     { window.location.href = 'https://login-topaz-iota.vercel.app/'; }
 
     document.addEventListener('click', function(e) {
-        const dropdown = document.getElementById('userDropdown');
-        if (!document.querySelector('.user-info').contains(e.target)) {
-            dropdown.classList.remove('show');
-        }
-    });
+    const dropdown = document.getElementById('userDropdown');
+    if (!document.querySelector('.user-info').contains(e.target)) {
+        dropdown.classList.remove('show');
+    }
+    if (e.target === document.getElementById('offenseRecordModal')) closeOffenseRecordModal();
+});
 
     // ── UTILITIES ─────────────────────────────────────────────
     function escHtml(str) {
@@ -1173,5 +1211,29 @@ function renderCounselorDMPage() {
     // ── BOOT ──────────────────────────────────────────────────
     navigateToHome();
 </script>
+    <div id="offenseRecordModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:16px;width:92%;max-width:700px;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(0,0,0,0.3);">
+        <div style="background:var(--dark-navy);padding:20px 30px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;">
+            <span style="font-size:18px;font-weight:700;color:var(--gold);">📁 Offense Record</span>
+            <button onclick="closeOffenseRecordModal()" style="background:none;border:none;color:var(--gold);font-size:24px;cursor:pointer;line-height:1;">✕</button>
+        </div>
+        <div style="padding:16px 30px;background:var(--dark-navy);border-top:1px solid rgba(212,166,80,0.2);flex-shrink:0;">
+            <div id="offenseModalStudentInfo" style="font-size:14px;color:rgba(255,255,255,0.85);line-height:1.8;"></div>
+        </div>
+        <div style="overflow-y:auto;flex:1;">
+            <table style="width:100%;border-collapse:collapse;">
+                <thead style="background:var(--dark-navy);position:sticky;top:0;z-index:1;">
+                    <tr>
+                        <th style="padding:12px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.05em;">Date</th>
+                        <th style="padding:12px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.05em;">Offense</th>
+                        <th style="padding:12px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.05em;">Level</th>
+                        <th style="padding:12px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:0.05em;">Remarks</th>
+                    </tr>
+                </thead>
+                <tbody id="offenseModalTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
 </body>
 </html>
