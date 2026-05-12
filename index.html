@@ -332,7 +332,7 @@
 
         .referral-detail-form { background: var(--white); border-radius: 12px; padding: 40px; }
 
-        .referral-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 30px; }
+        .referral-form-grid { display: grid; grid-template-columns: 1fr; gap: 40px; margin-bottom: 30px; }
 
         .referral-form-column { display: flex; flex-direction: column; gap: 25px; }
 
@@ -629,35 +629,11 @@
                                 <div class="referral-textarea-box" id="detailRemark">—</div>
                             </div>
                         </div>
-                        <!-- Right Column -->
-                        <div class="referral-form-column">
-                            <div class="referral-form-group">
-                                <label class="referral-label">Progress Report:</label>
-                                <textarea class="referral-textarea-input" id="detailProgressNotes" placeholder="Enter progress notes..."></textarea>
-                            </div>
-                            <div class="referral-form-group">
-                                <label class="referral-label">Counseling Session:</label>
-                                <div class="session-inputs">
-                                    <div class="session-input-group">
-                                        <span class="session-label">Start:</span>
-                                        <input type="datetime-local" class="session-input" id="detailSessionStart">
-                                    </div>
-                                    <div class="session-input-group">
-                                        <span class="session-label">Finish:</span>
-                                        <input type="datetime-local" class="session-input" id="detailSessionEnd">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="referral-form-group">
-                                <label class="referral-label">Outcome / Remarks:</label>
-                                <textarea class="referral-textarea-input" id="detailOutcome" placeholder="Enter outcome or remarks..."></textarea>
-                            </div>
-                        </div>
+                        
                     </div>
                     <div class="referral-action-buttons">
-                        <button class="btn-end-session" onclick="endSession()">End Session</button>
-                        <button class="btn-send-progress" onclick="sendProgressReport()">Send Progress Report</button>
-                    </div>
+    <button class="btn-end-session" onclick="endSession()">End Session</button>
+</div>
                 </div>
             </div>
         </div>
