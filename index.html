@@ -54,6 +54,19 @@
     transition: background 0.2s;
 }
 
+.nav-parent { cursor: pointer; user-select: none; }
+.nav-dropdown-arrow { margin-left: auto; font-size: 11px; color: var(--gold); transition: transform 0.25s ease; }
+.nav-dropdown-arrow.open { transform: rotate(180deg); }
+.nav-dropdown { background: rgba(0,0,0,0.2); overflow: hidden; }
+.nav-sub-item {
+    display: block; padding: 10px 20px 10px 58px;
+    color: rgba(245,197,99,0.75); font-size: 13px; font-weight: 400;
+    text-decoration: none; transition: all 0.2s ease;
+    border-left: 4px solid transparent;
+}
+.nav-sub-item:hover { color: var(--light-gold); background: rgba(212,166,80,0.08); border-left-color: var(--gold); }
+.nav-sub-item.active { color: var(--light-gold); font-weight: 600; border-left-color: var(--gold); }
+
 .info-circle:hover { background: var(--navy); }
 
 .info-circle .info-tooltip {
@@ -420,13 +433,19 @@
             </div>
         </div>
         <nav class="nav-menu">
-            <div class="nav-item active" onclick="navigateToHome()">
-                <span class="nav-icon">🏠</span><span>Home</span>
-            </div>
-            <div class="nav-item" onclick="navigateToManageOffense()">
-                <span class="nav-icon">📁</span><span>Manage Offense</span>
-            </div>
-        </nav>
+    <a href="#" class="nav-item active" onclick="navigateToHome(event)">
+        <span class="nav-icon">🏠</span><span>Home</span>
+    </a>
+
+    <div class="nav-item nav-parent" onclick="toggleNavDropdown('manageOffenseDropdown', this)">
+        <span class="nav-icon">📁</span><span>Manage Offense</span>
+        <span class="nav-dropdown-arrow" id="manageOffenseArrow">▼</span>
+    </div>
+    <div class="nav-dropdown hidden" id="manageOffenseDropdown">
+        <a href="#" class="nav-sub-item" onclick="navTo(event, navigateToDisciplinaryMeasures)">The HIMC Disciplinary Measures</a>
+        <a href="#" class="nav-sub-item" onclick="navTo(event, navigateToCounselingReferral)">Counseling Referral</a>
+    </div>
+</nav>
     </aside>
 
     <!-- Main Content -->
@@ -507,10 +526,7 @@
 
         <!-- ── DISCIPLINARY MEASURES PAGE ── -->
         <div id="disciplinaryMeasuresPage" class="dashboard-content hidden">
-            <button class="back-button" onclick="backToManageOffense()">
-                <div class="back-icon">←</div>
-                <span>The HIMC Disciplinary Measures</span>
-            </button>
+           
             <div class="disciplinary-content">
     <!-- Level 1 -->
     <div class="offense-level-section">
@@ -601,10 +617,7 @@
 
         <!-- ── COUNSELING REFERRAL DETAIL PAGE ── -->
         <div id="counselingReferralDetailPage" class="dashboard-content hidden">
-            <button class="back-button" onclick="backToCounselingReferral()">
-                <div class="back-icon">←</div>
-                <span>Counseling Referral</span>
-            </button>
+            
             <div class="referral-detail-container">
                 <div class="referral-detail-header">
                     <div class="referral-detail-avatar">👤</div>
@@ -799,6 +812,22 @@ function renderCounselorDMPage() {
             document.getElementById('statActive').textContent = '—';
         }
     }
+
+    function toggleNavDropdown(dropdownId, parentEl) {
+    const dropdown = document.getElementById(dropdownId);
+    const arrow = parentEl.querySelector('.nav-dropdown-arrow');
+    const isOpen = !dropdown.classList.contains('hidden');
+    dropdown.classList.toggle('hidden', isOpen);
+    arrow.classList.toggle('open', !isOpen);
+    parentEl.classList.toggle('active', !isOpen);
+}
+
+function navTo(e, fn) {
+    e.preventDefault();
+    document.querySelectorAll('.nav-sub-item').forEach(el => el.classList.remove('active'));
+    e.target.classList.add('active');
+    fn();
+}
 
     async function loadIncomingReferrals() {
         const grid = document.getElementById('incomingReferralsGrid');
@@ -1000,7 +1029,8 @@ function closeOffenseRecordModal() {
             item.classList.toggle('active', i === index));
     }
 
-    function navigateToHome() {
+    function navigateToHome(event) {
+    if (event) event.preventDefault();
         showPage('homePage');
         setNavActive(0);
         updateTopBar('🏠', 'Dashboard', 'Welcome Back, Counselor!');
