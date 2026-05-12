@@ -863,7 +863,7 @@ const statusLabel = r.status === 'InProgress' ? 'In Progress' : r.status;
                 <td>${escHtml(r.grade_level || '—')}</td>
                 <td>${escHtml(r.section_name || '—')}</td>
                 <td style="color:#666;">${escHtml(r.reason || '—')}</td>
-                <td><span class="referral-status-badge ${badgeClass}">${escHtml(r.status)}</span></td>
+                <td><span class="referral-status-badge ${badgeClass}">${escHtml(statusLabel)}</span></td>
                 <td style="color:#888;">${formatDate(r.referral_date)}</td>
                 <td>
                     <div class="action-links">
