@@ -857,6 +857,7 @@ function renderCounselorDMPage() {
         }
         tbody.innerHTML = data.referrals.map(r => {
             const badgeClass = r.status === 'Open' ? 'badge-open' : r.status === 'InProgress' ? 'badge-inprogress' : 'badge-closed';
+const statusLabel = r.status === 'InProgress' ? 'In Progress' : r.status;
             return `<tr>
                 <td style="font-weight:600;">${escHtml(r.student_name)}</td>
                 <td>${escHtml(r.grade_level || '—')}</td>
