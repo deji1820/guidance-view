@@ -893,11 +893,7 @@ function renderCounselorDMPage() {
         document.getElementById('detailStatus').textContent       = '';
         document.getElementById('detailDate').textContent         = '';
         document.getElementById('detailRemark').textContent       = '';
-        document.getElementById('detailProgressNotes').value      = '';
-        document.getElementById('detailSessionStart').value       = '';
-        document.getElementById('detailSessionEnd').value         = '';
-        document.getElementById('detailOutcome').value            = '';
-
+       
         try {
             const data = await apiFetch(`get_counselor_referrals.php?referral_id=${id}`);
             if (!data.success || data.referrals.length === 0) {
@@ -916,12 +912,7 @@ function renderCounselorDMPage() {
         document.getElementById('detailGradeSection').textContent = r.grade_section || '—';
         document.getElementById('detailDate').textContent         = formatDate(r.referral_date);
         document.getElementById('detailRemark').textContent       = r.reason || '—';
-        document.getElementById('detailProgressNotes').value      = r.progress_notes || '';
-        document.getElementById('detailOutcome').value            = r.outcome || '';
-
-        // Session times — convert MySQL datetime → datetime-local format
-        if (r.session_start) document.getElementById('detailSessionStart').value = toDatetimeLocal(r.session_start);
-        if (r.session_end)   document.getElementById('detailSessionEnd').value   = toDatetimeLocal(r.session_end);
+        
 
         // Status badge
         const statusEl  = document.getElementById('detailStatus');
@@ -967,53 +958,18 @@ function closeOffenseRecordModal() {
     document.getElementById('offenseRecordModal').style.display = 'none';
 }
 
-    async function sendProgressReport() {
-        if (!currentReferralId) return;
-        const progressNotes  = document.getElementById('detailProgressNotes').value.trim();
-        const outcome        = document.getElementById('detailOutcome').value.trim();
-        const sessionStartRaw = document.getElementById('detailSessionStart').value;
-        const sessionEndRaw   = document.getElementById('detailSessionEnd').value;
-
-        const payload = { referral_id: currentReferralId };
-        if (progressNotes) payload.progress_notes = progressNotes;
-        if (outcome)        payload.outcome        = outcome;
-        if (sessionStartRaw) payload.session_start = toMySQLDatetime(new Date(sessionStartRaw));
-        if (sessionEndRaw)   payload.session_end   = toMySQLDatetime(new Date(sessionEndRaw));
-
-        try {
-            const data = await apiFetch('update_referral_status.php', {
-                method: 'POST',
-                body: JSON.stringify(payload)
-            });
-            if (data.success) {
-                showInfo('Saved', 'Progress report saved successfully!', '✅');
-            } else {
-                showInfo('Error', 'Failed to save: ' + (data.message || 'Unknown error'), '❌');
-            }
-        } catch (e) {
-            showInfo('Network Error', 'Could not connect. Please try again.', '❌');
-        }
-    }
+    
 
     async function endSession() {
         if (!currentReferralId) return;
         const ok = await showConfirm('End Session', 'Are you sure you want to end this counseling session?', 'End Session', '🔴');
         if (!ok) return;
 
-        const sessionEndRaw   = document.getElementById('detailSessionEnd').value;
-        const progressNotes   = document.getElementById('detailProgressNotes').value.trim();
-        const outcome         = document.getElementById('detailOutcome').value.trim();
-        const sessionStartRaw = document.getElementById('detailSessionStart').value;
-
         const payload = {
-            referral_id: currentReferralId,
-            status:      'Closed',
-            session_end: sessionEndRaw ? toMySQLDatetime(new Date(sessionEndRaw)) : toMySQLDatetime(new Date())
-        };
-        if (progressNotes)   payload.progress_notes = progressNotes;
-        if (outcome)          payload.outcome        = outcome;
-        if (sessionStartRaw)  payload.session_start  = toMySQLDatetime(new Date(sessionStartRaw));
-
+    referral_id: currentReferralId,
+    status:      'Closed',
+    session_end: toMySQLDatetime(new Date())
+};
         try {
             const data = await apiFetch('update_referral_status.php', {
                 method: 'POST',
