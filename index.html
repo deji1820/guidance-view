@@ -945,21 +945,31 @@ const statusLabel = r.status === 'InProgress' ? 'In Progress' : r.status;
     }
 
     function populateDetail(r) {
-        document.getElementById('detailName').textContent         = r.student_name || '—';
-        document.getElementById('detailGradeSection').textContent = r.grade_section || '—';
-        document.getElementById('detailDate').textContent         = formatDate(r.referral_date);
-        document.getElementById('detailRemark').textContent       = r.reason || '—';
-        
+    document.getElementById('detailName').textContent         = r.student_name || '—';
+    document.getElementById('detailGradeSection').textContent = r.grade_section || '—';
+    document.getElementById('detailDate').textContent         = formatDate(r.referral_date);
+    document.getElementById('detailRemark').textContent       = r.reason || '—';
 
-        // Status badge
-        const statusEl = document.getElementById('detailStatus');
-statusEl.textContent = r.status;
-if (r.status === 'InProgress') statusEl.textContent = 'In Progress';
-statusEl.className = '';
-if (r.status === 'Open')       statusEl.className = 'status-open';
-if (r.status === 'InProgress') statusEl.className = 'status-inprogress';
-if (r.status === 'Closed')     statusEl.className = 'status-closed';
+    // Status badge
+    const statusEl = document.getElementById('detailStatus');
+    statusEl.textContent = r.status;
+    if (r.status === 'InProgress') statusEl.textContent = 'In Progress';
+    statusEl.className = '';
+    if (r.status === 'Open')       statusEl.className = 'status-open';
+    if (r.status === 'InProgress') statusEl.className = 'status-inprogress';
+    if (r.status === 'Closed')     statusEl.className = 'status-closed';
+
+    // Action buttons based on status
+    const actionsDiv = document.querySelector('.referral-action-buttons');
+    if (r.status === 'Closed') {
+        actionsDiv.innerHTML = '';
+    } else if (r.status === 'Open') {
+        actionsDiv.innerHTML = `<button class="btn-start" onclick="startReferralFromDetail(${r.referral_id})">Start Session</button>`;
+    } else {
+        // InProgress
+        actionsDiv.innerHTML = `<button class="btn-end-session" onclick="endSession()">End Session</button>`;
     }
+}
 
     async function viewOffenseRecord(event, studentNumber, studentName) {
     event.preventDefault();
@@ -1035,6 +1045,28 @@ function closeOffenseRecordModal() {
         document.querySelectorAll('.nav-item').forEach((item, i) =>
             item.classList.toggle('active', i === index));
     }
+
+    async function startReferralFromDetail(id) {
+    const ok = await showConfirm('Start Session', 'Start counseling session for this referral?', 'Start', '🟢');
+    if (!ok) return;
+    try {
+        const now = toMySQLDatetime(new Date());
+        const data = await apiFetch('update_referral_status.php', {
+            method: 'POST',
+            body: JSON.stringify({ referral_id: id, status: 'InProgress', session_start: now })
+        });
+        if (data.success) {
+            // Reload the detail view to reflect new status
+            const updated = await apiFetch(`get_counselor_referrals.php?referral_id=${id}`);
+            if (updated.success && updated.referrals.length) populateDetail(updated.referrals[0]);
+            await loadStats();
+        } else {
+            showInfo('Error', 'Failed to start session: ' + (data.message || 'Unknown error'), '❌');
+        }
+    } catch (e) {
+        showInfo('Network Error', 'Could not connect. Please try again.', '❌');
+    }
+}
 
     function navigateToHome(event) {
     if (event) event.preventDefault();
