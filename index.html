@@ -599,16 +599,17 @@
         <div class="referral-table-wrapper">
             <table class="referral-history-table">
                 <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Grade</th>
-                        <th>Section</th>
-                        <th>Remarks</th>
-                        <th>Status</th>
-                        <th>Date Sent</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
+    <tr>
+        <th>Student ID</th>
+        <th>Name</th>
+        <th>Grade</th>
+        <th>Section</th>
+        <th>Remarks</th>
+        <th>Status</th>
+        <th>Date Sent</th>
+        <th>Actions</th>
+    </tr>
+</thead>
                 <tbody id="referralHistoryBody">
                     <tr><td colspan="7" style="text-align:center;color:#aaa;padding:30px;">Loading...</td></tr>
                 </tbody>
@@ -884,33 +885,34 @@ function navTo(e, fn) {
     // ── REFERRAL HISTORY ──────────────────────────────────────
     async function loadReferralHistory() {
     const tbody = document.getElementById('referralHistoryBody');
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#aaa;padding:30px;">Loading...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#aaa;padding:30px;">Loading...</td></tr>';
     try {
         const data = await apiFetch('get_counselor_referrals.php');
         if (!data.success || data.referrals.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#aaa;padding:30px;">No referral records found.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#aaa;padding:30px;">No referral records found.</td></tr>';
             return;
         }
         tbody.innerHTML = data.referrals.map(r => {
-            const badgeClass = r.status === 'Open' ? 'badge-open' : r.status === 'InProgress' ? 'badge-inprogress' : 'badge-closed';
-const statusLabel = r.status === 'InProgress' ? 'In Progress' : r.status;
-            return `<tr>
-                <td style="font-weight:600;">${escHtml(r.student_name)}</td>
-                <td>${escHtml(r.grade_level || '—')}</td>
-                <td>${escHtml(r.section_name || '—')}</td>
-                <td style="color:#666;">${escHtml(r.reason || '—')}</td>
-                <td><span class="referral-status-badge ${badgeClass}">${escHtml(statusLabel)}</span></td>
-                <td style="color:#888;">${formatDate(r.referral_date)}</td>
-                <td>
-                    <div class="action-links">
-                        <a href="#" class="view-link" onclick="viewReferral(event, ${r.referral_id})">View</a>
-                        <a href="#" class="view-offense-link" onclick="viewOffenseRecord(event, '${escHtml(r.student_number || '')}', '${escHtml(r.student_name)}')">Offenses</a>
-                    </div>
-                </td>
-            </tr>`;
-        }).join('');
+    const badgeClass = r.status === 'Open' ? 'badge-open' : r.status === 'InProgress' ? 'badge-inprogress' : 'badge-closed';
+    const statusLabel = r.status === 'InProgress' ? 'In Progress' : r.status;
+    return `<tr>
+        <td style="color:#888;font-size:12px;">${escHtml(r.student_number || '—')}</td>
+        <td style="font-weight:600;">${escHtml(r.student_name)}</td>
+        <td>${escHtml(r.grade_level || '—')}</td>
+        <td>${escHtml(r.section_name || '—')}</td>
+        <td style="color:#666;">${escHtml(r.reason || '—')}</td>
+        <td><span class="referral-status-badge ${badgeClass}">${escHtml(statusLabel)}</span></td>
+        <td style="color:#888;">${formatDate(r.referral_date)}</td>
+        <td>
+            <div class="action-links">
+                <a href="#" class="view-link" onclick="viewReferral(event, ${r.referral_id})">View</a>
+                <a href="#" class="view-offense-link" onclick="viewOffenseRecord(event, '${escHtml(r.student_number || '')}', '${escHtml(r.student_name)}')">Offenses</a>
+            </div>
+        </td>
+    </tr>`;
+}).join('');
     } catch (e) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#dc3545;padding:30px;">Failed to load records.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#dc3545;padding:30px;">Failed to load records.</td></tr>';
     }
 }
 
